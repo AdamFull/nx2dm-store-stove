@@ -1,0 +1,4 @@
+# The STOVE (Smilegate) SDK: a licence-gated developer download, no
+# fetchable URL - it can never be committed. Developer-provided locally; see
+# NxStoreStove.cmake.
+/third_party/StoveSdk/
