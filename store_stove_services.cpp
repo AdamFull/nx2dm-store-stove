@@ -50,7 +50,7 @@ bool StoveCore::is_owned(const nx::string_view dlc_id) const {
   return false;
 }
 
-void StoveCore::refresh_ownership() {
+void StoveCore::refresh_ownership(const nx::string_view) {
   if (!m_platform.ownership_ready())
     return;
   Stove::PCSDK::Ownership::Ownership_OwnershipList(
@@ -127,7 +127,7 @@ bool StoveIap::purchase(const nx::string_view product_id) {
   return true;
 }
 
-void StoveIap::refresh_products() {
+void StoveIap::refresh_products(const nx::vector<nx::string> &) {
   if (!m_platform.iap_ready())
     return;
   const Stove::PCSDK::IAP::StovePCFetchProductParam params;

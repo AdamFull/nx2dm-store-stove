@@ -52,8 +52,10 @@ public:
 
   /// Fires Ownership_OwnershipList() - the SDK has no per-id query, only a
   /// full list of the base game + every DLC's ownership at once, refreshing
-  /// both is_owned()'s base-game flag and owned_dlc_ids().
-  void refresh_ownership();
+  /// both is_owned()'s base-game flag and owned_dlc_ids(). @p dlc_id is
+  /// ignored, same as store::StoreCore::refresh_ownership() documents for
+  /// any bulk-capable backend.
+  void refresh_ownership(nx::string_view dlc_id = {}) override;
 
 private:
   static void __cdecl on_ownership_list_finished(
@@ -85,8 +87,10 @@ public:
   /// products() and the per-id sale-price cache purchase() needs -
   /// IAP_StartPurchase()'s order must echo back the exact sale price a
   /// prior fetch returned, so purchase() can't be called for an id this
-  /// hasn't cached yet.
-  void refresh_products();
+  /// hasn't cached yet. @p product_ids is ignored, same as
+  /// store::StoreIap::refresh_products() documents for any bulk-capable
+  /// backend.
+  void refresh_products(const nx::vector<nx::string> &product_ids = {}) override;
 
 private:
   static void __cdecl on_fetch_products_finished(
@@ -132,6 +136,15 @@ public:
   /// Fires GameSupport_Stat(id), refreshing the cached value stat() reads
   /// back for that one id.
   void refresh_stat(nx::string_view id);
+
+  /// GameSupportSDK has no bulk stat query - unlike achievement_ids()/
+  /// is_unlocked() (always refreshed in full), stat() only reflects the ids
+  /// named in @p stat_ids.
+  void refresh(const nx::vector<nx::string> &stat_ids) override {
+    refresh_achievements();
+    for (const nx::string &id : stat_ids)
+      refresh_stat(id);
+  }
 
 private:
   static void __cdecl on_all_achievement_finished(

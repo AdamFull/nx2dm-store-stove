@@ -60,4 +60,7 @@ TEST_CASE(
   achievements.refresh_achievements();
   achievements.refresh_stat("enemies_killed");
   CHECK(achievements.achievement_ids().empty());
+  achievements.refresh({"enemies_killed"});
+  CHECK(achievements.achievement_ids().empty());
+  CHECK(achievements.stat("enemies_killed") == 0.0);
 }
