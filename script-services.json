@@ -1,0 +1,52 @@
+{
+  "services": [
+    {
+      "name": "store_stove_pcbang_login",
+      "signature": "()->(boolean)"
+    },
+    {
+      "name": "store_stove_pcbang_login_pending",
+      "signature": "()->(boolean)"
+    },
+    {
+      "name": "store_stove_pcbang_logged_in",
+      "signature": "()->(boolean)"
+    },
+    {
+      "name": "store_stove_pcbang_logout",
+      "signature": "()->(boolean)"
+    },
+    {
+      "name": "store_stove_pcbang_logout_pending",
+      "signature": "()->(boolean)"
+    },
+    {
+      "name": "store_stove_pcbang_check_status",
+      "signature": "()->(boolean)"
+    },
+    {
+      "name": "store_stove_pcbang_check_status_pending",
+      "signature": "()->(boolean)"
+    },
+    {
+      "name": "store_stove_pcbang_is_pc_bang",
+      "signature": "()->(boolean)"
+    },
+    {
+      "name": "store_stove_pcbang_is_premium",
+      "signature": "()->(boolean)"
+    },
+    {
+      "name": "store_stove_pcbang_serial_number",
+      "signature": "()->(number)"
+    },
+    {
+      "name": "store_stove_pcbang_remain_time",
+      "signature": "()->(number)"
+    },
+    {
+      "name": "store_stove_pcbang_product_code",
+      "signature": "()->(number)"
+    }
+  ]
+}

@@ -25,7 +25,7 @@ nx_add_stove_sdk()
 nx_module(store_stove
         DISPLAY "STOVE (Smilegate) storefront backend"
         SOURCES store_stove_module.cpp store_stove_config.cpp store_stove_platform.cpp
-                store_stove_services.cpp
+                store_stove_services.cpp store_stove_pcbang.cpp store_stove_scripting.cpp
         DEPENDS nx::stovesdk nx_module_store
         PLATFORMS windows)
 

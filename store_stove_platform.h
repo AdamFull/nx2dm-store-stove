@@ -22,8 +22,8 @@ struct PlatformConfig {
   nx::string shop_key;
 };
 
-/// Owns the four STOVE sub-SDKs this module uses (Base/Ownership/IAP/
-/// GameSupport) and their init/tick/shutdown sequencing.
+/// Owns the five STOVE sub-SDKs this module uses (Base/Ownership/IAP/
+/// GameSupport/PCBang) and their init/tick/shutdown sequencing.
 ///
 /// Two structural quirks drive this class's shape, both confirmed directly
 /// from the vendored headers rather than assumed:
@@ -38,11 +38,11 @@ struct PlatformConfig {
 ///   process at a time, the same invariant `order_modules()` already
 ///   enforces via ServiceRegistry for "only one store active".
 /// - Base_Initialize() is asynchronous (`OnInitializeFinished`), but
-///   Ownership_Initialize()/IAP_Initialize()/GameSupport_Initialize() are
-///   all synchronous (`Result`, returned directly) - so this class only
-///   starts them once BaseSDK's own callback confirms success, storing
-///   `shop_key` as a member since IAP_Initialize() needs it there, not at
-///   the point PlatformConfig was passed to initialize().
+///   Ownership_Initialize()/IAP_Initialize()/GameSupport_Initialize()/
+///   PCBang_Initialize() are all synchronous (`Result`, returned directly) -
+///   so this class only starts them once BaseSDK's own callback confirms
+///   success, storing `shop_key` as a member since IAP_Initialize() needs
+///   it there, not at the point PlatformConfig was passed to initialize().
 ///
 /// STOVE also assumes a launcher already authenticated the user before the
 /// game process started - there is no Login call anywhere in BaseSDK, only
@@ -68,6 +68,7 @@ public:
   [[nodiscard]] bool game_support_ready() const noexcept {
     return m_game_support_ready;
   }
+  [[nodiscard]] bool pcbang_ready() const noexcept { return m_pcbang_ready; }
 
 private:
   static void __cdecl on_initialize_finished(Stove::PCSDK::CallbackResult result);
@@ -78,6 +79,7 @@ private:
   bool m_ownership_ready = false;
   bool m_iap_ready = false;
   bool m_game_support_ready = false;
+  bool m_pcbang_ready = false;
   nx::string m_shop_key;
 
   static StovePlatform *s_instance;

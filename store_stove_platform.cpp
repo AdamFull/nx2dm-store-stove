@@ -5,6 +5,7 @@
 #include <GameSupportSDK.h>
 #include <IAPSDK.h>
 #include <OwnershipSDK.h>
+#include <PCBangSDK.h>
 
 #include <Windows.h>
 
@@ -83,7 +84,12 @@ void StovePlatform::shutdown() {
   namespace Ownership = Stove::PCSDK::Ownership;
   namespace IAP = Stove::PCSDK::IAP;
   namespace GameSupport = Stove::PCSDK::GameSupport;
+  namespace PCBang = Stove::PCSDK::PCBang;
 
+  if (m_pcbang_ready) {
+    PCBang::PCBang_UnInitialize();
+    m_pcbang_ready = false;
+  }
   if (m_game_support_ready) {
     GameSupport::GameSupport_UnInitialize();
     m_game_support_ready = false;
@@ -114,6 +120,7 @@ void StovePlatform::on_initialize_result(
   namespace Ownership = Stove::PCSDK::Ownership;
   namespace IAP = Stove::PCSDK::IAP;
   namespace GameSupport = Stove::PCSDK::GameSupport;
+  namespace PCBang = Stove::PCSDK::PCBang;
 
   if (!result.GetResult().IsSuccessful()) {
     // Expected whenever the process wasn't launched through (or alongside)
@@ -137,6 +144,9 @@ void StovePlatform::on_initialize_result(
   const Stove::PCSDK::Result game_support_result =
       GameSupport::GameSupport_Initialize();
   m_game_support_ready = game_support_result.IsSuccessful();
+
+  const Stove::PCSDK::Result pcbang_result = PCBang::PCBang_Initialize();
+  m_pcbang_ready = pcbang_result.IsSuccessful();
 
   nx::logi(log_store_stove, "Base_Initialize succeeded");
 }

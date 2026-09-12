@@ -1,5 +1,7 @@
 #include "store_stove/store_stove_config.h"
+#include "store_stove/store_stove_pcbang.h"
 #include "store_stove/store_stove_platform.h"
+#include "store_stove/store_stove_scripting.h"
 #include "store_stove/store_stove_services.h"
 
 #include "store/store_service.h"
@@ -30,7 +32,8 @@ constexpr nxe::ModuleService PROVIDED_SERVICES[] = {
 class StoreStoveModule final : public nxe::Module {
 public:
   StoreStoveModule()
-      : m_core(m_platform), m_iap(m_platform), m_achievements(m_platform) {}
+      : m_core(m_platform), m_iap(m_platform), m_achievements(m_platform),
+        m_pcbang(m_platform) {}
 
   [[nodiscard]] nxe::ModuleDescriptor descriptor() const noexcept override {
     nxe::ModuleDescriptor out{};
@@ -82,6 +85,10 @@ public:
     return true;
   }
 
+  void on_expose_scripts(nxe::script::Host &host, nxe::ModuleContext &) override {
+    expose_store_stove_extras(host, m_pcbang);
+  }
+
   void on_detach(nxe::ModuleContext &) override { m_platform.shutdown(); }
 
 private:
@@ -89,6 +96,11 @@ private:
   StoveCore m_core;
   StoveIap m_iap;
   StoveAchievements m_achievements;
+
+  // Stove-specific extra (PC Bang detection) - never part of
+  // store_service.h's neutral interface, never registered through
+  // ServiceRegistry (see store_stove_scripting.h).
+  StovePCBang m_pcbang;
 };
 
 } // namespace

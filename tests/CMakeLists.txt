@@ -3,10 +3,14 @@ add_executable(nx_store_stove_tests
         test_store_stove_config.cpp
         test_store_stove_module.cpp
         test_store_stove_services.cpp
+        test_store_stove_pcbang.cpp
+        test_store_stove_scripting.cpp
         ../store_stove_config.cpp
         ../store_stove_module.cpp
         ../store_stove_platform.cpp
-        ../store_stove_services.cpp)
+        ../store_stove_services.cpp
+        ../store_stove_pcbang.cpp
+        ../store_stove_scripting.cpp)
 
 nx_module_registry(nx_store_stove_tests)
 

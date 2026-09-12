@@ -6,15 +6,15 @@
 # established.
 #
 # Unlike those three (one vendor DLL each), STOVE ships one DLL/.lib pair
-# per subsystem. This module calls into four of them directly - BaseSDK,
-# OwnershipSDK, IAPSDK, GameSupportSDK - each gets its own IMPORTED SHARED
-# target, wrapped in one nx::stovesdk INTERFACE target so store_stove's own
-# CMakeLists.txt only needs to depend on a single name. LogSDK, PCBangSDK
-# and WebView2Loader are never called directly (this module has no use for
-# telemetry or PC-bang detection) but are still staged next to the
-# executable - the four linked DLLs may depend on them internally at
-# runtime, the same "extra runtime companion" precedent store_egs's
-# xaudio2_9redist.dll already established for EOS's voice chat.
+# per subsystem. This module calls into five of them directly - BaseSDK,
+# OwnershipSDK, IAPSDK, GameSupportSDK, PCBangSDK - each gets its own
+# IMPORTED SHARED target, wrapped in one nx::stovesdk INTERFACE target so
+# store_stove's own CMakeLists.txt only needs to depend on a single name.
+# LogSDK and WebView2Loader are never called directly (this module has no
+# use for telemetry) but are still staged next to the executable - the
+# linked DLLs may depend on them internally at runtime, the same "extra
+# runtime companion" precedent store_egs's xaudio2_9redist.dll already
+# established for EOS's voice chat.
 
 set(NX_STORE_STOVE_SDK_DIR "" CACHE PATH
         "An extracted STOVE PC SDK (containing Include/ and dll/x64, lib/x64). Empty uses modules/store_stove/third_party/StoveSdk.")
@@ -56,6 +56,8 @@ function(nx_add_stove_sdk)
             RUNTIME "${_bin}/IAPSDK.dll" IMPLIB "${_lib}/IAPSDK.lib")
     _nx_imported_shared_library(nx_stove_gamesupport
             RUNTIME "${_bin}/GameSupportSDK.dll" IMPLIB "${_lib}/GameSupportSDK.lib")
+    _nx_imported_shared_library(nx_stove_pcbang
+            RUNTIME "${_bin}/PCBangSDK.dll" IMPLIB "${_lib}/PCBangSDK.lib")
 
     # The include dir must live on each IMPORTED target itself, not on the
     # INTERFACE umbrella below - only a genuinely IMPORTED target gets
@@ -63,17 +65,19 @@ function(nx_add_stove_sdk)
     # (-external:I under MSVC, silencing this vendor SDK's own warnings
     # under this project's /W4 /WX), the same reason store_egs's/
     # store_gog's own single-target vendoring already sets it there.
-    foreach (_t nx_stove_base nx_stove_ownership nx_stove_iap nx_stove_gamesupport)
+    foreach (_t nx_stove_base nx_stove_ownership nx_stove_iap nx_stove_gamesupport
+            nx_stove_pcbang)
         set_target_properties(${_t} PROPERTIES
                 INTERFACE_INCLUDE_DIRECTORIES "${_root}/Include")
     endforeach ()
 
     add_library(nx_stovesdk INTERFACE)
     target_link_libraries(nx_stovesdk INTERFACE
-            nx_stove_base nx_stove_ownership nx_stove_iap nx_stove_gamesupport)
+            nx_stove_base nx_stove_ownership nx_stove_iap nx_stove_gamesupport
+            nx_stove_pcbang)
     add_library(nx::stovesdk ALIAS nx_stovesdk)
 
-    foreach (_extra LogSDK.dll PCBangSDK.dll WebView2Loader.dll)
+    foreach (_extra LogSDK.dll WebView2Loader.dll)
         if (EXISTS "${_bin}/${_extra}")
             file(COPY "${_bin}/${_extra}" DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
         endif ()
