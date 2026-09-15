@@ -2,7 +2,7 @@
 
 #include "store_stove/store_stove_pcbang.h"
 
-#include "core/script/script_host.h"
+#include "script/script_host.h"
 
 namespace nxm::store_stove {
 
