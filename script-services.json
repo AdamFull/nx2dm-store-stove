@@ -1,4 +1,7 @@
 {
+  "platforms": [
+    "windows"
+  ],
   "services": [
     {
       "name": "store_stove_pcbang_login",
